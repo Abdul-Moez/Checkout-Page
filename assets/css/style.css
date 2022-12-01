@@ -1,0 +1,176 @@
+.check-icon-fill{
+    height: 1.5rem;
+    margin: 1rem;
+}
+
+#payment-form,
+#shipping-information-form,
+#register-form,
+#login-form{
+    width: 50%;
+}
+
+.subtotal-body,
+.shipping-body,
+.tax-body{
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+}
+.total-body{
+    font-size: 17px;
+    display: flex;
+    justify-content: space-between;
+}
+.products-body{
+    border: 1px solid #f0f1f3;
+    margin: 2rem 2rem;
+    display: flex;
+    justify-content: start;
+}
+.product-img{
+    padding-top: 1rem;
+    width: 30%;
+    height: 60%;
+}
+.prod-info{
+    line-height: 9px;
+    margin-top: 1rem;
+}
+.right-middle-content{
+    display: flex;
+    justify-content: space-around;
+    font-size: 25px;
+    padding: 1rem;
+}
+.payment-methods{
+    font-size: 30px;
+}
+.form-input-fields{
+    width: 35% !important;
+}
+
+.continue-guest-btn{
+    border: 0;
+    background: #14275c;
+    color: white;
+    padding: 0.6rem 1.5rem;
+}
+
+
+.page-timeline {
+    margin: 30px auto 0 auto;
+    position: relative;
+    max-width: 1000px;
+}
+  
+.page-timeline:before {
+    position: absolute;
+    content: "";
+    top: 40px;
+    bottom: 40px;
+    left: 26px;
+    right: auto;
+    height: auto;
+    width: 3px;
+    background: #b7bfc6;
+    z-index: 0;
+}
+
+.vtimeline-content {
+    margin-left: 50px;
+    padding: 10px 10px;
+    text-align: left;
+}
+
+.vtimeline-point {
+    position: relative;
+    display: block;
+    margin-bottom: 30px;
+}
+
+.vtimeline-icon {
+    position: relative;
+    color: #000;
+    width: 50px;
+    height: 50px;
+    /* background: #4782d3; */
+    border-radius: 50%;
+    float: left;
+    text-align: center;
+    line-height: 50px;
+    z-index: 99;
+    /* margin-left: 280px; */
+}
+
+
+.express-checkout {
+    margin-top: 3em;
+    border: 1px solid rgb(167, 167, 167);
+    text-align: center;
+    padding-bottom: 1.5em;
+    border-radius: 0.8rem;
+}
+
+.content-line{
+    margin-top: 3em;
+    border-top: 1px solid rgb(167, 167, 167);
+    text-align: center;
+}
+
+.content-line h5{
+    display: table;
+    margin: -15px auto 28px auto;
+    background-color: #eff1f3;
+    font-size: 20px;
+    padding: 0 15px;
+}
+
+.express-checkout h5 {
+    display: table;
+    margin: -15px auto 28px auto;
+    background-color: #eff1f3;
+    font-size: 20px;
+    padding: 0 15px;
+}
+.paypal-body{
+    display: flex;
+    justify-content: center;
+}
+.paypal-express{
+    /* background-color: #ffc439; */
+    /* background: linear-gradient(#ffa900,#ffe439,#ffa900); */
+    /* padding: 1rem; */
+    /* border-radius: 1rem; */
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.paypal-express img{
+    height: 50px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.prod-body{
+    height: 30vh;
+    overflow-y: scroll;
+}
+
+/* .right-content-body{
+    position: fixed;
+    right: 0;
+    height: 100vh;
+    overflow-y: scroll;
+} */
+
+@media only screen and (max-width: 448px) {
+    .form-input-fields{
+        width: 100% !important;
+    }
+
+    #payment-form,
+    #shipping-information-form,
+    #register-form,
+    #login-form{
+        width: 100%;
+    }
+}

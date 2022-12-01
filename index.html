@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf_token" content="{{ csrf_token() }}" />
+
+    <title>Checkout</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="#" type="image/x-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="assets/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="assets/fontawesome/css/fontawesome.min.css">
+
+    <!-- Cutom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- CSS only -->
+    <link href="assets/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Sweet Alert CSS -->
+    <link rel="stylesheet" href="assets/sweet_alert/sweetalert2.min.css">
+
+    <style>
+        .check-icon-fill{
+            height: 1.5rem;
+            margin: 1rem;
+        }
+
+        #payment-form,
+        #shipping-information-form,
+        #register-form,
+        #login-form{
+            width: 50%;
+        }
+
+        .subtotal-body,
+        .shipping-body,
+        .tax-body{
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .total-body{
+            font-size: 17px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .products-body{
+            border: 1px solid #f0f1f3;
+            margin: 2rem 2rem;
+            display: flex;
+            justify-content: start;
+        }
+        .product-img{
+            padding-top: 1rem;
+            width: 30%;
+            height: 60%;
+        }
+        .prod-info{
+            line-height: 9px;
+            margin-top: 1rem;
+        }
+        .right-middle-content{
+            display: flex;
+            justify-content: space-around;
+            font-size: 25px;
+            padding: 1rem;
+        }
+        .payment-methods{
+            font-size: 30px;
+        }
+        .form-input-fields{
+            width: 35% !important;
+        }
+
+        .continue-guest-btn{
+            border: 0;
+            background: #14275c;
+            color: white;
+            padding: 0.6rem 1.5rem;
+        }
+
+
+        .page-timeline {
+            margin: 30px auto 0 auto;
+            position: relative;
+            max-width: 1000px;
+        }
+        
+        .page-timeline:before {
+            position: absolute;
+            content: "";
+            top: 40px;
+            bottom: 40px;
+            left: 26px;
+            right: auto;
+            height: auto;
+            width: 3px;
+            background: #b7bfc6;
+            z-index: 0;
+        }
+
+        .vtimeline-content {
+            margin-left: 50px;
+            padding: 10px 10px;
+            text-align: left;
+        }
+
+        .vtimeline-point {
+            position: relative;
+            display: block;
+            margin-bottom: 30px;
+        }
+
+        .vtimeline-icon {
+            position: relative;
+            color: #000;
+            width: 50px;
+            height: 50px;
+            /* background: #4782d3; */
+            border-radius: 50%;
+            float: left;
+            text-align: center;
+            line-height: 50px;
+            z-index: 99;
+            /* margin-left: 280px; */
+        }
+
+
+        .express-checkout {
+            margin-top: 3em;
+            border: 1px solid rgb(167, 167, 167);
+            text-align: center;
+            padding-bottom: 1.5em;
+            border-radius: 0.8rem;
+        }
+
+        .content-line{
+            margin-top: 3em;
+            border-top: 1px solid rgb(167, 167, 167);
+            text-align: center;
+        }
+
+        .content-line h5{
+            display: table;
+            margin: -15px auto 28px auto;
+            background-color: #eff1f3;
+            font-size: 20px;
+            padding: 0 15px;
+        }
+
+        .express-checkout h5 {
+            display: table;
+            margin: -15px auto 28px auto;
+            background-color: #eff1f3;
+            font-size: 20px;
+            padding: 0 15px;
+        }
+        .paypal-body{
+            display: flex;
+            justify-content: center;
+        }
+        .paypal-express{
+            /* background-color: #ffc439; */
+            /* background: linear-gradient(#ffa900,#ffe439,#ffa900); */
+            /* padding: 1rem; */
+            /* border-radius: 1rem; */
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .paypal-express img{
+            height: 50px;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .prod-body{
+            height: 30vh;
+            overflow-y: scroll;
+        }
+
+        /* .right-content-body{
+            position: fixed;
+            right: 0;
+            height: 100vh;
+            overflow-y: scroll;
+        } */
+
+        @media only screen and (max-width: 448px) {
+            .form-input-fields{
+                width: 100% !important;
+            }
+
+            #payment-form,
+            #shipping-information-form,
+            #register-form,
+            #login-form{
+                width: 100%;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#"><img src="https://dummyimage.com/50x50/000/fff&text=logo" alt="Logo"/></a>
+        </div>
+    </nav>
+
+    <div class="checkout-body">
+        <div class="row m-0" style="background: #eff1f3;">
+            <div class="col-sm-12 col-md-12 col-lg-9">
+                <h1 class="m-2" style="color: #232f3e;">CHECKOUT</h1>
+                <div class="express-checkout mx-3">
+                    <h5>Express Checkout</h5>
+                    <div class="paypal-body">
+                        <div class="paypal-express">
+                            <!-- <img src="assets/img/paypal_logo.svg" alt="">
+                            <img src="assets/img/paypal_text.svg" alt=""> -->
+                            <button type="submit" class="border-0 bg-transparent"><img src="assets/img/express-checkout-with-paypal.png" alt=""></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-line mx-3">
+                    <h5>OR</h5>
+                </div>
+                <div class="content-body">
+                    <div class="page-timeline">
+                        <div class="vtimeline-point">
+                        <div class="vtimeline-icon">
+                            <i class="check-icon-fill fa-solid fa-circle-check"></i>
+                        </div>
+                        <div class="vtimeline-block">
+                            <div class="vtimeline-content">
+                                <h5 class="text-uppercase mt-1 login-continue-head">Log In Or Continue As Guest</h5>
+                                <a href="javascript:void(0)" class="text-uppercase mt-1 text-dark text-decoration-none fs-5 d-none" id="open-login-or-guest" >Log In Or Continue As Guest</a>
+                                <div id="login-or-guest">
+                                    <div class="alert alert-danger d-none" id="emptyInputFiled"></div>
+                                    <div class="mb-3 after-line-content">
+                                        <div class="continue-as-guest" id="guest-form">
+                                            <input type="text" class="borderradius form-control guestFormChckInput" guestattr="Email Address" name="GSTEmail" id="guest-email" value='<?php echo date("mdYGis")."@guest.com" ;?>' required="" placeholder="Enter email address..."/>
+                                            <button type="button" class="continue-guest-btn my-2" id="continue-guest">CONTINUE AS GUEST <i class="fa-solid fa-arrow-right"></i></button>
+                                        </div>
+                                        <div class="continue-login d-none" id="login-form">
+                                            <div class="row m-0">
+                                                <div class="col-sm-12 col-md-12 p-0 pe-2">
+                                                    <div class="mb-3">
+                                                        <label for="" class="form-label">Email Address: <span class="text-danger">*</span></label>
+                                                        <input type="email" class="form-control rounded-0 loginFormChckInput" loginattr="Email Address" name="login-email" id="login-email">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="" class="form-label">Password: <span class="text-danger">*</span></label>
+                                                        <input type="password" class="form-control rounded-0 loginFormChckInput" loginattr="Password" name="login-pass" id="login-pass">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <button type="button" class="continue-guest-btn" id="submit-login">LOGIN <i class="fa-solid fa-arrow-right"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="continue-register d-none" id="register-form">
+                                            <div class="row m-0">
+                                                <div class="col-sm-12 col-md-6 p-0 pe-2">
+                                                    <label for="" class="form-label">First Name: <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control rounded-0 registerFormChckInput" registerattr="First Name" name="register-fname" id="register-fname">
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 p-0 pe-2 mb-3">
+                                                    <label for="" class="form-label">Last Name: <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control rounded-0 registerFormChckInput" registerattr="Last Name" name="register-lname" id="register-lname">
+                                                </div>
+                                                <h3>Shipping Information</h3>
+                                                <hr>
+                                                <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                                    <label for="" class="form-label">Address: <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control rounded-0 registerFormChckInput" registerattr="Address" name="register-address" id="register-address">
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 p-0 pe-2">
+                                                    <label for="" class="form-label">City: <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control rounded-0 registerFormChckInput" registerattr="City" name="register-city" id="register-city">
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 p-0 pe-2 mb-3">
+                                                    <label for="" class="form-label">Country: <span class="text-danger">*</span></label>
+                                                    <select class="form-select rounded-0 registerFormChckInput" registerattr="Country" name="register-country" id="register-country">
+                                                        <option value="">Select Country</option>
+                                                        <option value="usa">USA</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 p-0 pe-2 mb-3">
+                                                    <label for="" class="form-label">State: <span class="text-danger">*</span></label>
+                                                    <select class="form-select rounded-0 registerFormChckInput" registerattr="State" name="register-state" id="register-state">
+                                                        <option value="">Select State</option>
+                                                        <option value="Alabama">Alabama</option>
+                                                        <option value="Alaska">Alaska</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 p-0 pe-2">
+                                                    <label for="" class="form-label">ZipCode/Extension: <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control rounded-0 registerFormChckInput" registerattr="ZipCode/Extension" name="register-zipcode" id="register-zipcode">
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                                    <label for="" class="form-label">Phone Number: <span class="text-danger">*</span></label>
+                                                    <input type="number" class="form-control rounded-0 registerFormChckInput" registerattr="Phone Number" name="register-number" id="register-number">
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                                    <label for="" class="form-label">Email Address: <span class="text-danger">*</span></label>
+                                                    <input type="email" class="form-control rounded-0 registerFormChckInput" registerattr="Email Address" name="register-email" id="register-email">
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                                    <label for="" class="form-label">Password: <span class="text-danger">*</span></label>
+                                                    <input type="password" class="form-control rounded-0 registerFormChckInput" registerattr="Password" name="register-password" id="register-password">
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                                    <label for="" class="form-label">Assign an address title for future reference: <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control rounded-0 registerFormChckInput" registerattr="Assign an address title for future reference" name="register-assign-address" id="register-assign-address" placeholder="My address">
+                                                </div>
+                                                <div class="mb-3 p-0 pe-2">
+                                                    <button type="button" class="continue-guest-btn" id="submit-register">REGISTER <i class="fa-solid fa-arrow-right"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="my-3">
+                                            <button type="button" class="continue-guest-btn my-1" id="open-login">LOGIN</button>
+                                            <button type="button" class="continue-guest-btn my-1" id="open-register">REGISTER</button>
+                                            <button type="button" class="continue-guest-btn my-1 d-none" id="open-guest">CONTINUE AS GUEST</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class="vtimeline-point" id="shipping-information">
+                            <div class="vtimeline-icon">
+                                <i class="check-icon-fill fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="vtimeline-block">
+                                <div class="vtimeline-content">
+                                    <h5 class="text-uppercase mt-1 shipping-information-head">Shipping Information</h5>
+                                    <a href="javascript:void(0)" class="text-uppercase mt-1 text-dark text-decoration-none fs-5 d-none" id="open-shipping" >Shipping Information</a>
+                                    <div class="row m-0">
+                                        <div class="col-sm-12 col-md-12">
+                                            <div class="continue-register d-none" id="shipping-information-form">
+                                                <div class="p-0 pe-2 d-flex gap-2">
+                                                    <input type="checkbox" class="form-check rounded-0" name="check-bill" id="check-bill">
+                                                    <p class="mt-2"> Click here if your billing is same as your shipping? </p>
+                                                </div>
+                                                <div class="row m-0 mb-5" id="billing-form">
+                                                    <h6 class="text-uppercase mt-1 p-0 pe-2">Billing Information</h6>
+                                                    <div class="col-sm-12 col-md-6 p-0 pe-2">
+                                                        <label for="" class="form-label">First Name: <span class="text-danger"><span class="text-danger">*</span></span></label>
+                                                        <input type="text" class="form-control rounded-0 shippingFormChckInput" shippingattr="First Name" name="shipping-fname" id="shipping-fname">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 p-0 pe-2 mb-3">
+                                                        <label for="" class="form-label">Last Name: <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control rounded-0 shippingFormChckInput" shippingattr="Last Name" name="shipping-lname" id="shipping-lname">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                                        <label for="" class="form-label">Address: <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control rounded-0 shippingFormChckInput" shippingattr="Address" name="shipping-address" id="shipping-address">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 p-0 pe-2">
+                                                        <label for="" class="form-label">City: <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control rounded-0 shippingFormChckInput" shippingattr="City" name="shipping-city" id="shipping-city">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 p-0 pe-2 mb-3">
+                                                        <label for="" class="form-label">Country: <span class="text-danger">*</span></label>
+                                                        <select class="form-select rounded-0 shippingFormChckInput" shippingattr="Country" name="shipping-country" id="shipping-country">
+                                                            <option value="">Select Country</option>
+                                                            <option value="usa">USA</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 p-0 pe-2 mb-3">
+                                                        <label for="" class="form-label">State: <span class="text-danger">*</span></label>
+                                                        <select class="form-select rounded-0 shippingFormChckInput" shippingattr="State" name="shipping-state" id="shipping-state">
+                                                            <option value="">Select State</option>
+                                                            <option value="Alabama">Alabama</option>
+                                                            <option value="Alaska">Alaska</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 p-0 pe-2">
+                                                        <label for="" class="form-label">ZipCode/Extension: <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control rounded-0 shippingFormChckInput" shippingattr="ZipCode/Extension" name="shipping-zipcode" id="shipping-zipcode">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                                        <label for="" class="form-label">Phone Number: <span class="text-danger">*</span></label>
+                                                        <input type="number" class="form-control rounded-0 shippingFormChckInput" shippingattr="Phone Number" name="shipping-number" id="shipping-number">
+                                                    </div>
+                                                </div>
+                                                <div class="row m-0" id="shipping-form">
+                                                    <h6 class="text-uppercase mt-1 p-0 pe-2">Shipping Information</h6>
+                                                    <div class="col-sm-12 col-md-6 p-0 pe-2">
+                                                        <label for="" class="form-label">First Name: <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control rounded-0 shippingFormChckInput" shippingattr="First Name" name="shipping-fname" id="shipping-fname">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 p-0 pe-2 mb-3">
+                                                        <label for="" class="form-label">Last Name: <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control rounded-0 shippingFormChckInput" shippingattr="Last Name" name="shipping-lname" id="shipping-lname">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                                        <label for="" class="form-label">Address: <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control rounded-0 shippingFormChckInput" shippingattr="Address" name="shipping-address" id="shipping-address">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 p-0 pe-2">
+                                                        <label for="" class="form-label">City: <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control rounded-0 shippingFormChckInput" shippingattr="City" name="shipping-city" id="shipping-city">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 p-0 pe-2 mb-3">
+                                                        <label for="" class="form-label">Country: <span class="text-danger">*</span></label>
+                                                        <select class="form-select rounded-0 shippingFormChckInput" shippingattr="Country" name="shipping-country" id="shipping-country">
+                                                            <option value="">Select Country</option>
+                                                            <option value="usa">USA</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 p-0 pe-2 mb-3">
+                                                        <label for="" class="form-label">State: <span class="text-danger">*</span></label>
+                                                        <select class="form-select rounded-0 shippingFormChckInput" shippingattr="State" name="shipping-state" id="shipping-state">
+                                                            <option value="">Select State</option>
+                                                            <option value="Alabama">Alabama</option>
+                                                            <option value="Alaska">Alaska</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 p-0 pe-2">
+                                                        <label for="" class="form-label">ZipCode/Extension: <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control rounded-0 shippingFormChckInput" shippingattr="ZipCode/Extension" name="shipping-zipcode" id="shipping-zipcode">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                                        <label for="" class="form-label">Phone Number: <span class="text-danger">*</span></label>
+                                                        <input type="number" class="form-control rounded-0 shippingFormChckInput" shippingattr="Phone Number" name="shipping-number" id="shipping-number">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                                        <label for="" class="form-label">Email Address: <span class="text-danger">*</span></label>
+                                                        <input type="email" class="form-control rounded-0 shippingFormChckInput" shippingattr="Email Address" name="shipping-email" id="shipping-email">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                                        <label for="" class="form-label">Password: <span class="text-danger">*</span></label>
+                                                        <input type="password" class="form-control rounded-0 shippingFormChckInput" shippingattr="Password" name="shipping-password" id="shipping-password">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                                        <label for="" class="form-label">Assign an address title for future reference: <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control rounded-0 shippingFormChckInput" shippingattr="Assign an address title for future reference" name="shipping-assign-address" id="shipping-assign-address" placeholder="My address">
+                                                    </div>
+                                                    <div class="mb-3 p-0 pe-2">
+                                                        <button type="button" class="continue-guest-btn" id="submit-shipping">CONTINUE <i class="fa-solid fa-arrow-right"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="vtimeline-point" id="payment-methods">
+                            <div class="vtimeline-icon">
+                                <i class="check-icon-fill fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="vtimeline-block">
+                                <div class="vtimeline-content">
+                                    <h5 class="text-uppercase mt-1 payment-methods-head">Payment Methods</h5>
+                                    <a href="javascript:void(0)" class="text-uppercase mt-1 text-dark text-decoration-none fs-5 d-none" id="open-payment" >Payment Methods</a>
+                                    <div class="row m-0 d-none" id="payment-form">
+                                        <small>Pay secure using your credit card.</small>
+                                        <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                            <label for="" class="form-label">Card Type: <span class="text-danger">*</span></label>
+                                            <select class="form-select rounded-0 paymentFormChckInput" paymentattr="Card Type" name="payment-card" id="payment-card">
+                                                <option value="">Select Card</option>
+                                                <option value="Visa">Visa</option>
+                                                <option value="MasterCard">MasterCard</option>
+                                                <option value="Discover">Discover</option>
+                                                <option value="American Express">American Express</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                            <label for="" class="form-label">Name on Card: <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control rounded-0 paymentFormChckInput" paymentattr="Name on Card" name="payment-card-name" id="payment-card-name">
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                            <label for="" class="form-label">Credit Card Number: <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control rounded-0 paymentFormChckInput" paymentattr="Credit Card Number" name="payment-card-number" id="payment-card-number">
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 p-0 pe-2 mb-3">
+                                            <label for="" class="form-label">Card CVV: <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control rounded-0 paymentFormChckInput" paymentattr="Card CVV" name="payment-card-cvv" id="payment-card-cvv">
+                                        </div>
+                                        <div class="p-0 pe-2 mb-3 row m-0">
+                                            <label for="" class="form-label">Expiration Date: <span class="text-danger">*</span></label>                                            
+                                            <div class="col-sm-12 col-md-6 p-0 pe-2">
+                                                <select class="form-select rounded-0 paymentFormChckInput" paymentattr="Expiration Month" name="payment-expiration-month" id="payment-expiration-month">
+                                                    <option value="">Month</option>
+                                                    <option value="01">01</option>
+                                                    <option value="02">02</option>
+                                                    <option value="03">03</option>
+                                                    <option value="04">04</option>
+                                                    <option value="05">05</option>
+                                                    <option value="06">06</option>
+                                                    <option value="07">07</option>
+                                                    <option value="08">08</option>
+                                                    <option value="09">09</option>
+                                                    <option value="10">10</option>
+                                                    <option value="11">11</option>
+                                                    <option value="12">12</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 p-0 pe-2">
+                                                <select class="form-select rounded-0 paymentFormChckInput" paymentattr="Expiration Year" name="payment-expiration-year" id="payment-expiration-year">
+                                                    <option value="">Year</option>
+                                                    <option value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+                                                    <option value="2031">2031</option>
+                                                    <option value="2032">2032</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 p-0 pe-2">
+                                            <button type="button" class="continue-guest-btn" id="payment-proceed">Proceed <i class="fa-solid fa-arrow-right"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="right-content-body col-sm-12 col-md-12 col-lg-3 p-0 px-1">
+                <div class="row m-0">
+                    <div class="right-top-content col-sm-12 col-md-6 col-lg-12 bg-white my-1 p-0 pe-2">
+                        <h4 class="p-2 px-4 fw-regular">SUMMARY</h4>
+                        <div class="subtotal-body">
+                            <p class="text-uppercase fw-bold px-4">Subtotal</p>
+                            <p class="text-uppercase fw-bold px-4">Rs. 1,500.00</p>
+                        </div>
+                        <div class="shipping-body">
+                            <p class="text-uppercase fw-bold px-4">Shipping</p>
+                            <p class="text-uppercase fw-bold px-4">FREE</p>
+                        </div>
+                        <div class="tax-body">
+                            <p class="text-uppercase fw-bold px-4">Tax</p>
+                            <p class="text-uppercase fw-bold px-4">Rs. 500.00</p>
+                        </div>
+                        <div class="total-body">
+                            <p class="text-uppercase fw-bold px-4">Total</p>
+                            <p class="text-uppercase fw-bold px-4">Rs. 2,000.00</p>
+                        </div>
+                        <div class="prod-body">
+                            <div class="products-body">
+                                <img src="https://www.longines.com/media/catalog/product/cache/c66b929a8dcf43d2744127ebe5e6a8e6/l/o/longines-watch-collection-record-l2-821-4-96-4-560x660-1667514202.png" alt="" class="product-img">
+                                <div class="prod-info">
+                                    <p class="text-uppercase text-secondary">record</p>
+                                    <p class="text-uppercase text-secondary">L2.821.4.96.4</p>
+                                    <p class="text-uppercase text-secondary">qty: 1</p>
+                                    <p class="text-uppercase text-secondary">total: rs.2,000.00</p>
+                                </div>
+                            </div>
+                            <div class="products-body">
+                                <img src="https://www.longines.com/media/catalog/product/cache/c66b929a8dcf43d2744127ebe5e6a8e6/l/o/longines-watch-collection-record-l2-821-4-96-4-560x660-1667514202.png" alt="" class="product-img">
+                                <div class="prod-info">
+                                    <p class="text-uppercase text-secondary">record</p>
+                                    <p class="text-uppercase text-secondary">L2.821.4.96.4</p>
+                                    <p class="text-uppercase text-secondary">qty: 1</p>
+                                    <p class="text-uppercase text-secondary">total: rs.2,000.00</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-bottom-content border-start col-sm-12 col-md-6 col-lg-12 bg-white my-1 p-0 pe-2">
+                        <div class="right-top-content border-bottom px-4">
+                            <h6 class="p-2 fw-bold text-uppercase">delivery</h6>
+                            <p class="fw-regular">2 to 5 working days - Bracelet & calf leather strap references</p>
+                            <p class="fw-regular">5 to 10 working days - Alligator leather strap references</p>
+                        </div>
+                        <div class="right-middle-content border-bottom px-4 text-uppercase">
+                            <div class="text-center">
+                                <i class="fa-solid fa-box"></i>
+                                <h6 style="font-size: 12px;">free shipping & return</h6>
+                            </div>
+                            <div class="text-center">
+                                <i class="fa-regular fa-credit-card"></i>
+                                <h6 style="font-size: 12px;">secure payment</h6>
+                            </div>
+                            <div class="text-center">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <h6 style="font-size: 12px;">Longines warranty</h6>
+                            </div>
+                            <div class="text-center">
+                                <i class="fa-regular fa-square-plus"></i>
+                                <h6 style="font-size: 12px;">Swiss made</h6>
+                            </div>
+                        </div>
+                        <div class="right-bottom-content px-4 vh-auto">
+                            <h6 class="p-2 fw-bold text-uppercase">Accepted payment methods</h6>
+                            <div class="payment-methods">
+                                <i class="fa-brands fa-cc-visa"></i>
+                                <i class="fa-brands fa-cc-mastercard"></i>
+                                <i class="fa-brands fa-cc-paypal"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Font Awesome JS -->
+    <script src="assets/fontawesome/js/all.min.js"></script>
+    <script src="assets/fontawesome/js/fontawesome.min.js"></script>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="assets/bootstrap/bootstrap.bundle.min.js"></script>
+    <!-- jQuery File -->
+    <script src="assets/javascript/jquery_3.6.1.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="assets/javascript/script.js"></script>
+    <!-- Sweet Alert Js -->
+    <script src="assets/sweet_alert/sweetalert2.min.js"></script>
+
+    <script>
+        $( document ).ready(function () {
+
+            $(document).on('click', '#continue-guest', function () {
+
+                var errorChckGuestFrm = '';
+                $('.guestFormChckInput').each(function(){
+                    var frGuestInpt = $(this).val();
+                    var frGuestInptAttr = $(this).attr('guestattr');
+                    if(frGuestInpt == ''){
+                        errorChckGuestFrm += frGuestInptAttr+"<br/>";
+                    }
+                });
+
+                // Email Validation
+                function IsEmail(email) {
+                    var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                    if (!regex.test(email)) {
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
+
+                if ($("#guest-email").val().length) {
+                    if (IsEmail($("#guest-email").val()) == false) {
+                        errorChckGuestFrm += 'Invalid Email\n<br/>';
+                    }
+                }
+
+                if(errorChckGuestFrm != ''){
+                    // alert('Please Select The Below Fields:\n'+errorChckGuestFrm);
+                    // $("#emptyInputFiled").removeClass("d-none");
+
+                    // $("#emptyInputFiled").html("Please fill out below fields: <br/>" + errorChckGuestFrm);
+                    Swal.fire({
+                        title: 'Please fill out below fields:',
+                        html: errorChckGuestFrm,
+                        icon: 'error',
+                    })
+                    return false;
+                }
+
+                $('#login-or-guest').addClass('d-none');
+                $('.login-continue-head').addClass('d-none');
+                $('#open-login-or-guest').removeClass('d-none');
+                $('#shipping-information-form').removeClass('d-none');
+
+                // console.log($("#guest-email").val());
+
+            });
+
+            $(document).on('click', '#submit-login', function () {
+                
+                var errorChckLoginFrm = '';
+                $('.loginFormChckInput').each(function(){
+                    var frLoginInpt = $(this).val();
+                    var frLoginInptAttr = $(this).attr('loginattr');
+                    if(frLoginInpt == ''){
+                        errorChckLoginFrm += frLoginInptAttr + "<br/>";
+                    }
+                });
+
+                // Email Validation
+                function IsEmail(email) {
+                    var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                    if (!regex.test(email)) {
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
+
+                if ($("#login-email").val().length) {
+                    if (IsEmail($("#login-email").val()) == false) {
+                        errorChckLoginFrm += 'Invalid Email\n<br/>';
+                    }
+                }
+
+                if(errorChckLoginFrm != ''){
+                    // alert('Please Select The Below Fields:\n'+errorChckLoginFrm);
+                    // $("#emptyInputFiled").removeClass("d-none");
+
+                    // $("#emptyInputFiled").html("Please fill out below fields: <br/>" + errorChckLoginFrm);
+
+                    Swal.fire({
+                        title: 'Please fill out below fields:',
+                        html: errorChckLoginFrm,
+                        icon: 'error',
+                    })
+                    return false;
+                }
+
+                $('#login-or-guest').addClass('d-none');
+                $('.login-continue-head').addClass('d-none');
+                $('#open-login-or-guest').removeClass('d-none');
+                $('#payment-form').removeClass('d-none');
+
+            });
+
+            $(document).on('click', '#submit-register', function () {
+                
+                var errorChckRegisterFrm = '';
+                $('.registerFormChckInput').each(function(){
+                    var frRegisterInpt = $(this).val();
+                    var frRegisterInptAttr = $(this).attr('registerattr');
+                    if(frRegisterInpt == ''){
+                        errorChckRegisterFrm += frRegisterInptAttr+"<br/>";
+                    }
+                });
+
+                // Email Validation
+                function IsEmail(email) {
+                    var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                    if (!regex.test(email)) {
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
+
+                if ($("#login-email").val().length) {
+                    if (IsEmail($("#login-email").val()) == false) {
+                        errorChckRegisterFrm += 'Invalid Email\n<br/>';
+                    }
+                }
+
+                if(errorChckRegisterFrm != ''){
+                    // alert('Please Select The Below Fields:\n'+errorChckRegisterFrm);
+                    // $("#emptyInputFiled").removeClass("d-none");
+
+                    // $("#emptyInputFiled").html("Please fill out below fields: <br/>" + errorChckRegisterFrm);
+                    Swal.fire({
+                        title: 'Please fill out below fields:',
+                        html: errorChckRegisterFrm,
+                        icon: 'error',
+                    })
+                    return false;
+                }
+
+                $('#login-or-guest').addClass('d-none');
+                $('.login-continue-head').addClass('d-none');
+                $('#open-login-or-guest').removeClass('d-none');
+                $('#payment-form').removeClass('d-none');
+
+            });
+
+            $(document).on('click', '#submit-shipping', function () {
+                
+                var errorChckShippingFrm = '';
+                $('.shippingFormChckInput').each(function(){
+                    var frShippingInpt = $(this).val();
+                    var frShippingInptAttr = $(this).attr('shippingattr');
+                    if(frShippingInpt == ''){
+                        errorChckShippingFrm += frShippingInptAttr+"<br/>";
+                    }
+                });
+
+                // Email Validation
+                function IsEmail(email) {
+                    var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                    if (!regex.test(email)) {
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
+
+                if ($("#shipping-email").val().length) {
+                    if (IsEmail($("#shipping-email").val()) == false) {
+                        errorChckShippingFrm += 'Invalid Email\n<br/>';
+                    }
+                }
+
+                if(errorChckShippingFrm != ''){
+                    // alert('Please Select The Below Fields:\n'+errorChckShippingFrm);
+                    // $("#emptyInputFiled").removeClass("d-none");
+
+                    // $("#emptyInputFiled").html("Please fill out below fields: <br/>" + errorChckShippingFrm);
+                    Swal.fire({
+                        title: 'Please fill out below fields:',
+                        html: errorChckShippingFrm,
+                        icon: 'error',
+                    })
+                    return false;
+                }
+
+                $('#shipping-information-form').addClass('d-none');
+                $('.shipping-information-head').addClass('d-none');
+                $('#open-shipping').removeClass('d-none');
+                $('#payment-form').removeClass('d-none');
+
+            });
+
+            $(document).on('click', '#payment-proceed', function () {
+                
+                var errorChckPaymentFrm = '';
+                $('.paymentFormChckInput').each(function(){
+                    var frPaymentInpt = $(this).val();
+                    var frPaymentInptAttr = $(this).attr('paymentattr');
+                    if(frPaymentInpt == ''){
+                        errorChckPaymentFrm += frPaymentInptAttr+"<br/>";
+                    }
+                });
+
+                if(errorChckPaymentFrm != ''){
+                    // alert('Please Select The Below Fields:\n'+errorChckPaymentFrm);
+                    // $("#emptyInputFiled").removeClass("d-none");
+
+                    // $("#emptyInputFiled").html("Please fill out below fields: <br/>" + errorChckPaymentFrm);
+                    Swal.fire({
+                        title: 'Please fill out below fields:',
+                        html: errorChckPaymentFrm,
+                        icon: 'error',
+                    })
+                    return false;
+                }
+
+                $('#payment-form').addClass('d-none');
+                $('.payment-methods-head').addClass('d-none');
+                $('#open-payment').removeClass('d-none');
+
+            });
+
+            $(document).on('click', '#check-bill', function () {
+                if ($(this).is(":checked")) {
+                    // $('#billing-form').addClass('d-none');
+                    $('#billing-form').fadeOut();
+
+                    $('#billing-form div input').removeClass('shippingFormChckInput');
+                    $('#billing-form div select').removeClass('shippingFormChckInput');
+
+                }
+                else {
+                    // $('#billing-form').removeClass('d-none');
+                    $('#billing-form').fadeIn();
+                    $('#billing-form div input').addClass('shippingFormChckInput');
+                    $('#billing-form div select').addClass('shippingFormChckInput');
+                }
+            });
+
+            $(document).on('click', '#open-login-or-guest', function () {
+                $('#login-or-guest').removeClass('d-none');
+                $('.login-continue-head').removeClass('d-none');
+                $('#open-login-or-guest').addClass('d-none');
+                $('#payment-form').addClass('d-none');
+                $('#shipping-information-form').addClass('d-none');
+            });
+            $(document).on('click', '#open-shipping', function () {
+                $('#shipping-information-form').removeClass('d-none');
+                $('.shipping-information-head').removeClass('d-none');
+                $('#open-shipping').addClass('d-none');
+                $('#payment-form').addClass('d-none');
+                $('#login-or-guest').addClass('d-none');
+            });
+            $(document).on('click', '#open-payment', function () {
+                $('#payment-form').removeClass('d-none');
+                $('.payment-methods-head').removeClass('d-none');
+                $('#open-payment').addClass('d-none');
+                $('#login-or-guest').addClass('d-none');
+                $('#shipping-information-form').addClass('d-none');
+            });
+
+            $(document).on('click', '#open-login', function () {
+                $('#guest-form').addClass('d-none');
+                $('#open-login').addClass('d-none');
+                $('#register-form').addClass('d-none');
+                $('#login-form').removeClass('d-none');
+                $('#open-guest').removeClass('d-none');
+                $('#open-register').removeClass('d-none');
+                
+                $("#emptyInputFiled").addClass("d-none");
+                $('#shipping-information').addClass('d-none');
+            });
+            $(document).on('click', '#open-register', function () {
+                $('#guest-form').addClass('d-none');
+                $('#login-form').addClass('d-none');
+                $('#open-register').addClass('d-none');
+                $('#register-form').removeClass('d-none');
+                $('#open-login').removeClass('d-none');
+                $('#open-guest').removeClass('d-none');
+
+                $("#emptyInputFiled").addClass("d-none");
+                $('#shipping-information').addClass('d-none');
+            });
+            $(document).on('click', '#open-guest', function () {
+                $('#guest-form').removeClass('d-none');
+                $('#open-login').removeClass('d-none');
+                $('#open-register').removeClass('d-none');
+                $('#register-form').addClass('d-none');
+                $('#login-form').addClass('d-none');
+                $('#open-guest').addClass('d-none');
+                $("#emptyInputFiled").addClass("d-none");
+
+                $('#shipping-information').removeClass('d-none');
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>
